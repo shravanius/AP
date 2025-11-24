@@ -1,0 +1,33 @@
+
+# DFS
+graph = {
+    1: [2, 3],
+    2: [4, 5],
+    3: [6, 7],
+    4: [],
+    5: [8],
+    6: [8],
+    7: [8],
+    8: []
+}
+visited = [] 
+def dfs(graph, start, goal):
+    stack = [start]      
+    while stack:
+        node = stack.pop()    
+        if node not in visited:
+            visited.append(node)
+            print(node, end=" ")
+            if node == goal:
+                return True
+            for neighbour in reversed(graph[node]):
+                stack.append(neighbour)
+    return False
+start_node = 1
+goal_node = 8
+print("DFS traversal: ")
+found = dfs(graph, start_node, goal_node)
+if found:
+    print("\nGoal node found")
+else:
+    print("\nGoal node not found")
