@@ -327,3 +327,67 @@ for p in paths:
         best_path = p
 print("Best Path:", best_path)
 print("Minimum Cost:", min_cost)
+
+
+# Prim's Algorithm
+graph = {
+    1: [(6,10),(2,28),(7,14)],
+    2: [(1,28),(3,16),(7,14)],
+    3: [(2,16),(4,12)],
+    4: [(3,12),(7,18),(5,22)],
+    5: [(7,24),(4,22),(6,25)],
+    6: [(1,10),(5,25)],
+    7: [(1,14),(2,14),(5,24),(4,18)]
+}
+visited = set()
+visited.add(1)
+mst_cost = 0
+while len(visited) < len(graph):
+    edge = None
+    w_min = float('inf')
+    for u in visited:
+        for v, w in graph[u]:
+            if v not in visited and w < w_min:
+                w_min = w
+                edge = (u, v)
+    mst_cost += w_min
+    visited.add(edge[1])
+    print("Selected edge:", edge, "cost =", w_min)
+print("Total Minimum Cost =", mst_cost)
+
+# Tic-Tak-Toe
+board = [" "] * 9
+player = "X"
+def show():
+    print(board[0], "|", board[1], "|", board[2])
+    print("--+---+--")
+    print(board[3], "|", board[4], "|", board[5])
+    print("--+---+--")
+    print(board[6], "|", board[7], "|", board[8])
+    print()
+def win():
+    combos = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+    ]
+    for c in combos:
+        if board[c[0]] == board[c[1]] == board[c[2]] != " ":
+            return True
+    return False
+for i in range(9):
+    show()
+    pos = int(input("Enter position (0-8) for " + player + ": "))
+    if board[pos] != " ":
+        print("Taken! Try again")
+        continue
+    board[pos] = player
+    if win():
+        show()
+        print("Player", player, "wins!")
+        break
+    player = "O" if player == "X" else "X"
+else:
+    show()
+    print("Draw")
+
