@@ -180,7 +180,6 @@ def dls(node, goal, depth):
             if dls(child, goal, depth - 1):
                 return True
     return False
-
 def iddfs(start, goal, max_depth):
     for depth in range(max_depth + 1):
         print("Searching at depth:", depth)
@@ -189,6 +188,142 @@ def iddfs(start, goal, max_depth):
             return True
     print("Goal not found")
     return False
-
 iddfs('A', 'G', 5)
 
+
+# A* algorithm
+Graph_nodes = {
+    'A': [('B', 6), ('F', 3)],
+    'B': [('C', 3), ('D', 2)],
+    'C': [('D', 1), ('E', 5)],
+    'D': [('C', 1), ('E', 8)],
+    'E': [('I', 5), ('J', 5)],
+    'F': [('G', 1),('H', 7)] ,
+    'G': [('I', 3)],
+    'H': [('I', 2)],
+    'I': [('E', 5), ('J', 3)],
+}
+def get_neighbors(v):
+    if v in Graph_nodes:
+        return Graph_nodes[v]
+    else:
+        return None
+def h(n):
+    H_dist = {
+        'A': 10,
+        'B': 8,
+        'C': 5,
+        'D': 7,
+        'E': 3,
+        'F': 6,
+        'G': 5,
+        'H': 3,
+        'I': 1,
+        'J': 0             
+    }
+    return H_dist[n]
+def aStarAlgo(start_node, stop_node):
+    open_set = set(start_node) 
+    closed_set = set()
+    g = {} 
+    parents = {}
+    g[start_node] = 0
+    parents[start_node] = start_node
+    while len(open_set) > 0:
+        n = None
+        for v in open_set:
+            if n == None or g[v] + h(v) < g[n] + h(n):
+                n = v
+        if n == stop_node or Graph_nodes[n] == None:
+            pass
+        else:
+            for (m, weight) in get_neighbors(n):
+                if m not in open_set and m not in closed_set:
+                    open_set.add(m)
+                    parents[m] = n
+                    g[m] = g[n] + weight
+                else:
+                    if g[m] > g[n] + weight:
+                        g[m] = g[n] + weight
+                        parents[m] = n
+                        if m in closed_set:
+                            closed_set.remove(m)
+                            open_set.add(m)
+        if n == None:
+            print('Path does not exist!')
+            return None
+        if n == stop_node:
+            path = []
+            while parents[n] != n:
+                path.append(n)
+                n = parents[n]
+            path.append(start_node)
+            path.reverse()
+            print('Path found: {}'.format(path))
+            return path
+        open_set.remove(n)
+        closed_set.add(n)
+    print('Path does not exist!')
+    return None
+aStarAlgo('A', 'J')
+
+
+# min max algorithm
+def mm(d, i, mx, s, md):
+    if d == md:
+        return s[i]
+    if mx: 
+        return max(
+            mm(d+1, i*2, False, s, md),
+            mm(d+1, i*2+1, False, s, md)
+        )
+    else:  
+        return min(
+            mm(d+1, i*2, True, s, md),
+            mm(d+1, i*2+1, True, s, md)
+        )
+scores = [3, 5, 2, 9]  
+ans = mm(0, 0, True, scores, 2)
+print("Best value:", ans)
+
+
+# Monkey Banana problem
+def monkey_banana():
+    monkey = "floor"
+    box = "floor"
+    banana = "ceiling"
+    print("Monkey is on the floor")
+    print("Monkey moves box under banana")
+    print("Monkey climbs onto the box")
+    print("Monkey grabs the banana")
+    print("Goal Achieved!")
+monkey_banana()
+
+
+# Traveling Salesman Problem
+d = [
+    [0, 10, 15, 20],
+    [10, 0, 35, 25],
+    [15, 35, 0, 30],
+    [20, 25, 30, 0]
+]
+paths = [
+    [0,1,2,3],
+    [0,1,3,2],
+    [0,2,1,3],
+    [0,2,3,1],
+    [0,3,1,2],
+    [0,3,2,1]
+]
+min_cost = 9999
+best_path = []
+for p in paths:
+    cost = 0
+    for i in range(3):
+        cost += d[p[i]][p[i+1]]
+    cost += d[p[3]][p[0]]  # return to start
+    if cost < min_cost:
+        min_cost = cost
+        best_path = p
+print("Best Path:", best_path)
+print("Minimum Cost:", min_cost)
